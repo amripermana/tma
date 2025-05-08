@@ -1,0 +1,43 @@
+import cv2
+import ultralytics
+from ultralytics import YOLO
+
+model = YOLO('models/best.onnx', task='obb')
+
+cap = cv2.VideoCapture("C:/Users/amrip/Downloads/TESTING.mp4")
+if not cap.isOpened():
+    print("Error: Unable to open video file")
+    exit()
+
+while True:
+    ret, frame = cap.read()
+
+    # Jika frame tidak berhasil dibaca, keluar dari loop
+    if not ret:
+        break
+
+    frame = frame[:, 280:1000]
+    frame = cv2.resize(frame, (416, 416))
+
+    #testing video
+    results = model(
+    source=frame,               # Bisa ganti ke path file / image
+    imgsz=416,
+    conf=0.7,
+    task='obb',
+    verbose=False,
+    stream=False,
+    save=False,
+    save_txt=False,
+    save_conf=False,
+    show=True
+    )
+
+
+
+
+    if cv2.waitKey(10) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
